@@ -1,17 +1,22 @@
 import { PrismaClient } from '@prisma/client';
-import { mockDeep, mockReset, DeepMockProxy } from 'jest-mock-extended';
+import { mockDeep, mockReset } from 'jest-mock-extended';
 import { validateCandidateData } from '../application/validator';
 import { addCandidate } from '../application/services/candidateService';
-import prisma from '../lib/prisma';
-import { CandidateData, DatabaseCandidate } from '../application/types';
 
-// Mock PrismaClient
-jest.mock('../lib/prisma', () => ({
-  __esModule: true,
-  default: mockDeep<PrismaClient>(),
-}));
+interface CandidateData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string | null;
+  address: string | null;
+}
 
-const prismaMock = prisma as unknown as DeepMockProxy<PrismaClient>;
+interface DatabaseCandidate extends CandidateData {
+  id: number;
+}
+
+// Mock PrismaClient directly
+const prismaMock = mockDeep<PrismaClient>();
 
 beforeEach(() => {
   mockReset(prismaMock);
